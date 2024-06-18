@@ -48,7 +48,7 @@ const Signup = () => {
         .then((res) => res.json())
         .then((data) => {
           setPic(data.url.toString());
-          console.log(data.url.toString());
+          // console.log(data.url.toString());
           setLoading(false);
         })
         .catch((err) => {
@@ -101,7 +101,7 @@ const Signup = () => {
         { name, email, password, pic },
         config
       );
-      console.log(data);
+      // console.log(data);
       toast({
         title: "Registration Successful",
         status: "success",

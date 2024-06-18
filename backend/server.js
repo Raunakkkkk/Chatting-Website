@@ -74,7 +74,7 @@ io.on("connection", (socket) => {
 
     chat.users.forEach((user) => {
       if (user._id == newMessageRecieved.sender._id) {
-        console.log("kcuh to gadbad hai");
+        // console.log("kcuh to gadbad hai");
         return;
       }
 

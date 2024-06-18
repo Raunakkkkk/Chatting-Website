@@ -51,7 +51,7 @@ const UpdateGroupChatModel = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
         config
       );
 
-      console.log(data._id);
+      // console.log(data._id);
       setselectedChat(data);
       setFetchAgain(!fetchAgain);
       setRenameLoading(false);
@@ -193,7 +193,7 @@ const UpdateGroupChatModel = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
         },
       };
       const { data } = await axios.get(`/api/user?search=${search}`, config);
-      console.log(data);
+      // console.log(data);
       setLoading(false);
       setSearchResult(data);
     } catch (error) {

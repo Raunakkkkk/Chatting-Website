@@ -28,7 +28,7 @@ const Homepage = () => {
         display="flex"
         justifyContent="center"
         alignItems="center"
-        p={2}
+        p={1}
         bg="white"
         w="100%"
         m="40px 0 15px 0"
@@ -37,11 +37,12 @@ const Homepage = () => {
       >
         <Text
           fontSize="4xl"
-          fontFamily="work sans"
-          color="black"
+          fontFamily="Roboto"
+          color="Grey"
           textAlign="center"
+          as='b'
         >
-          Chatting-App
+          ConvoHub
         </Text>
       </Box>
 
