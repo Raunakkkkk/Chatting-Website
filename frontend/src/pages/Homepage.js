@@ -69,6 +69,22 @@ const Homepage = () => {
           </TabPanels>
         </Tabs>
       </Box>
+      <Box
+      as="footer"
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      p={4}
+      bg="white"
+      w="100%"
+      mt="20px"
+      borderRadius="lg"
+      borderWidth="1px"
+    >
+      <Text fontSize="large" fontFamily="Roboto" color="Grey">
+       Made by Raunak Agarwal
+      </Text>
+    </Box>
     </Container>
   );
 };
