@@ -127,8 +127,9 @@ const SideDrawer = () => {
             </Text>
           </Button>
         </Tooltip>
-        <Text fontSize={"3xl"} fontFamily={"sans-serif"} as="b">
-          Chatting App
+        <Text fontSize={"4xl"} fontFamily={"Roboto"} as="b"           color="Grey"
+        >
+          ConvoHub
         </Text>
         <div>
           <Menu>
