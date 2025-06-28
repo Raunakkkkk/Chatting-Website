@@ -25,6 +25,7 @@ app.use(
       "http://localhost:3000",
       "http://127.0.0.1:5173",
       "https://convohub-8dos.onrender.com",
+      process.env.CHAT_APP_URL,
     ].filter(Boolean),
     credentials: true,
   })
@@ -67,6 +68,7 @@ const io = require("socket.io")(server, {
       "http://localhost:3000",
       "http://127.0.0.1:5173",
       "https://convohub-8dos.onrender.com",
+      process.env.CHAT_APP_URL,
     ].filter(Boolean),
     credentials: true,
   },
