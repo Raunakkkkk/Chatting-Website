@@ -21,11 +21,11 @@ import animationData from "../animations/typing.json";
 import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
 
-const ENDPOINT =
-  window.location.hostname === "localhost"
-    ? "http://localhost:5000"
-    : window.location.origin;
-// const ENDPOINT='https://convohub-8dos.onrender.com';
+// const ENDPOINT =
+//   window.location.hostname === "localhost"
+//     ? "http://localhost:5000"
+//     : window.location.origin;
+const ENDPOINT='https://convohub-8dos.onrender.com';
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
