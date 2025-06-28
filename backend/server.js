@@ -9,12 +9,26 @@ const chatRoutes = require("./routes/chatRoutes");
 const messageRoutes = require("./routes/messageRoutes");
 const { notFound, errorHandler } = require("./middlewares/errorMiddleware");
 const path = require("path");
+const cors = require("cors");
 dotenv.config();
 
 connectDB();
 const app = express();
 
 app.use(express.json());
+
+// CORS configuration
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:3000",
+      "http://127.0.0.1:5173",
+      "https://convohub-8dos.onrender.com",
+    ].filter(Boolean),
+    credentials: true,
+  })
+);
 
 app.use("/api/user", userRoutes);
 app.use("/api/chat", chatRoutes);
@@ -48,42 +62,63 @@ const server = app.listen(
 const io = require("socket.io")(server, {
   pingTimeout: 60000,
   cors: {
-    origin: "*",
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:3000",
+      "http://127.0.0.1:5173",
+      "https://convohub-8dos.onrender.com",
+    ].filter(Boolean),
+    credentials: true,
   },
 });
 io.on("connection", (socket) => {
   console.log("Connected to socket.io");
+
   socket.on("setup", (userData) => {
     socket.join(userData._id);
-    // console.log(userData._id);
+    socket.userId = userData._id; // Store user ID for typing indicators
+    console.log("User joined room:", userData._id);
     socket.emit("connected");
   });
 
   socket.on("join chat", (room) => {
     socket.join(room);
-    console.log("user joined room " + room);
+    console.log("User joined room: " + room);
   });
 
-  socket.on("typing", (room) => socket.in(room).emit("typing"));
-  socket.on("stop typing", (room) => socket.in(room).emit("stop typing"));
+  socket.on("typing", (room) => {
+    socket.in(room).emit("typing", { room, userId: socket.userId });
+  });
+
+  socket.on("stop typing", (room) => {
+    socket.in(room).emit("stop typing", { room, userId: socket.userId });
+  });
 
   socket.on("new message", (newMessageRecieved) => {
     var chat = newMessageRecieved.chat;
 
-    if (!chat.users) return console.log("chat.users not defined");
+    if (!chat.users) {
+      console.log("chat.users not defined");
+      return;
+    }
 
     chat.users.forEach((user) => {
       if (user._id == newMessageRecieved.sender._id) {
-        // console.log("kcuh to gadbad hai");
+        return; // Don't send message back to sender
+      }
+
+      // Ensure user._id exists and is valid
+      if (!user._id) {
         return;
       }
 
-      socket.in(chat._id).emit("message recieved", newMessageRecieved);
+      // Emit to each user individually
+      socket.to(user._id).emit("message recieved", newMessageRecieved);
     });
   });
 
-  socket.off("setup", () => {
+  // Handle disconnect properly
+  socket.on("disconnect", () => {
     console.log("USER DISCONNECTED");
-    socket.leave(userData._id);
   });
 });

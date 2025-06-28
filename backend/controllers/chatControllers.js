@@ -190,6 +190,50 @@ const addToGroup = expressAsyncHandler(async (req, res) => {
     res.json(added);
   }
 });
+
+const transferAdmin = expressAsyncHandler(async (req, res) => {
+  const { chatId, userId } = req.body;
+
+  // check if the requester is admin
+  const groupChatExists = await Chat.findOne({ _id: chatId });
+
+  if (!groupChatExists) {
+    return res.status(400).json({ error: "Invalid group chat Id." });
+  }
+
+  if (!groupChatExists.groupAdmin.equals(req.user._id)) {
+    return res
+      .status(401)
+      .json({ error: "Only the admin can transfer admin rights." });
+  }
+
+  // check if the user to transfer admin rights to is in the group
+  if (!groupChatExists.users.includes(userId)) {
+    return res
+      .status(400)
+      .json({ error: "User is not a member of this group." });
+  }
+
+  const updated = await Chat.findByIdAndUpdate(
+    chatId,
+    {
+      groupAdmin: userId,
+    },
+    {
+      new: true,
+    }
+  )
+    .populate("users", "-password")
+    .populate("groupAdmin", "-password");
+
+  if (!updated) {
+    res.status(404);
+    throw new Error("Chat Not Found");
+  } else {
+    res.json(updated);
+  }
+});
+
 module.exports = {
   accessChat,
   fetchChats,
@@ -197,4 +241,5 @@ module.exports = {
   renameGroup,
   addToGroup,
   removeFromGroup,
+  transferAdmin,
 };

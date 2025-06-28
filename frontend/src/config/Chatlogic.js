@@ -40,3 +40,13 @@ export const isSameSenderMargin = (messages, m, i, userId) => {
 export const isSameUser = (messages, m, i) => {
   return i > 0 && messages[i - 1].sender._id === m.sender._id;
 };
+export const isFirstMessage = (messages, m, i) => {
+  return i === 0 || messages[i - 1].sender._id !== m.sender._id;
+};
+export const isSecondMessage = (messages, m, i) => {
+  return (
+    i > 0 &&
+    messages[i].sender._id === messages[i - 1].sender._id &&
+    (i === 1 || messages[i - 2].sender._id !== m.sender._id)
+  );
+};

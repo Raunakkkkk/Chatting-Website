@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: convohub
+    env: node
+    plan: free
+    buildCommand: npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: CHAT_APP_URL
+        sync: false
+      - key: VITE_SOCKET_ENDPOINT
+        sync: false

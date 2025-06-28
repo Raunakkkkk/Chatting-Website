@@ -21,9 +21,11 @@ const sendMessage = expressAsyncHandler(async (req, res) => {
 
     message = await message.populate("sender", "name pic");
     message = await message.populate("chat");
+    // Populate chat users so socket can emit to all users
+    message = await message.populate("chat.users", "name pic email");
     //agar message obj ka output lenge to usme sender and chat field mai data ajayega (pehle bs usme ref id hoti)
     message = await User.populate(message, {
-      path: "chat.user",
+      path: "chat.users",
       select: "name pic email",
     });
     await Chat.findByIdAndUpdate(req.body.chatId, {
