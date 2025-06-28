@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node backend/server.js",
     "server": "nodemon backend/server.js",
-    "build": "npm install && cd frontend && npm install && npm run build",
+    "build": "echo 'Build completed by render.yaml'",
     "install-all": "npm install && cd frontend && npm install"
   },
   "author": "Raunak Agarwal",
