@@ -1,27 +1,79 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaSignInAlt, FaUserPlus } from "react-icons/fa";
+import { FaSignInAlt, FaUserPlus, FaUser } from "react-icons/fa";
 import Login from "../components/Authentication/Login";
 import Signup from "../components/Authentication/Signup";
 import ThemeToggle from "../components/common/ThemeToggle";
 
 const Homepage = () => {
   const [tab, setTab] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   // Check if user is already logged in
   useEffect(() => {
-    const userInfo = localStorage.getItem("userInfo");
-    if (userInfo) {
-      // User is logged in, redirect to chat page
-      navigate("/chats");
-    }
+    const checkUserAuth = () => {
+      try {
+        const userInfo = localStorage.getItem("userInfo");
+
+        if (userInfo) {
+          // Try to parse the user info
+          const user = JSON.parse(userInfo);
+
+          // Check if user object has required fields and token
+          if (user && user.token && user._id) {
+            // User is logged in, redirect to chat page
+            navigate("/chats", { replace: true });
+            return;
+          } else {
+            // Invalid user data, clear it
+            localStorage.removeItem("userInfo");
+          }
+        }
+      } catch (error) {
+        // If JSON parsing fails, clear invalid data
+        console.error("Error parsing user info:", error);
+        localStorage.removeItem("userInfo");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkUserAuth();
   }, [navigate]);
+
+  const handleAboutClick = () => {
+    window.open(
+      "https://drive.google.com/file/d/1Oo0YFwvREpHYtWBDrDpY1uWQlT6-gVcg/view?usp=sharing",
+      "_blank"
+    );
+  };
+
+  // Show loading spinner while checking auth
+  if (isLoading) {
+    return (
+      <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-blue-100 via-white to-purple-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-500 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400 font-medium">
+            Loading...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen w-full flex flex-col relative overflow-hidden bg-gradient-to-br from-blue-100 via-white to-purple-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-500">
-      {/* Theme Toggle - Top Right */}
-      <div className="absolute top-4 right-4 z-10">
+      {/* Theme Toggle and About Button - Top Right */}
+      <div className="absolute top-4 right-4 z-10 flex items-center space-x-3">
+        <button
+          onClick={handleAboutClick}
+          className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 text-sm"
+        >
+          <FaUser className="w-3 h-3" />
+          <span>About</span>
+        </button>
         <ThemeToggle />
       </div>
 
@@ -73,6 +125,7 @@ const Homepage = () => {
             {tab === 0 ? <Login /> : <Signup />}
           </div>
         </div>
+
         {/* Footer */}
         <footer className="w-full flex justify-center items-center mt-2 mb-4">
           <span className="text-sm font-medium tracking-wide text-gray-500 dark:text-gray-400 flex items-center gap-2">
